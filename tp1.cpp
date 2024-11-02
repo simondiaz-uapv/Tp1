@@ -12,13 +12,15 @@ public:
     TicTacToe() : board(3, std::vector<char>(3, ' ')), currentPlayer('X') {}
 
     void printBoard() {
-        for (auto &row : board) {
-            for (char cell : row) {
+        for (int i = 0; i < 3; ++i) {
+            std::cout << i * 3 + 1 << ' ' << i * 3 + 2 << ' ' << i * 3 + 3 << std::endl;
+            for (char cell : board[i]) {
                 std::cout << (cell == ' ' ? '-' : cell) << ' ';
             }
             std::cout << std::endl;
         }
     }
+
 
     bool makeMove(int move) {
         if (move < 1 || move > 9) {
