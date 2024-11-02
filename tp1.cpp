@@ -20,8 +20,13 @@ public:
         }
     }
 
-    bool makeMove(int row, int col) {
-        if (row < 0 || row >= 3 || col < 0 || col >= 3 || board[row][col] != ' ') {
+    bool makeMove(int move) {
+        if (move < 1 || move > 9) {
+            return false;
+        }
+        int row = (move - 1) / 3;
+        int col = (move - 1) % 3;
+        if (board[row][col] != ' ') {
             return false;
         }
         board[row][col] = currentPlayer;
@@ -64,13 +69,13 @@ public:
 
 int main() {
     TicTacToe game;
-    int row, col;
+    int move;
     while (true) {
         game.printBoard();
-        std::cout << "Player " << game.getCurrentPlayer() << ", enter your move (row and column): ";
-        std::cin >> row >> col;
+        std::cout << "Player " << game.getCurrentPlayer() << ", enter your move (1-9): ";
+        std::cin >> move;
         
-        if (!game.makeMove(row, col)) {
+        if (!game.makeMove(move)) {
             std::cout << "Invalid move. Try again." << std::endl;
             continue;
         }
