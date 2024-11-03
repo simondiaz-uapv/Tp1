@@ -6,6 +6,11 @@ class TicTacToe {
 private:
     char currentPlayer;
 
+    /**
+     * @brief Minimax algorithm to find the best move
+     * @param isMaximizing True if it's the maximizing player (O), false if it's the minimizing player (X)
+     * @return The best score for the maximizing player, or the worst score for the minimizing player
+     */
     int minimax(bool isMaximizing) {
         if (checkWin()) {
             return isMaximizing ? -1 : 1;
@@ -29,6 +34,10 @@ private:
         return bestScore;
     }
 
+    /**
+     * @brief Finds the best move for the maximizing player (O)
+     * @return The best move as an integer from 1 to 9
+     */
     int getBestMove() {
         int bestScore = std::numeric_limits<int>::min();
         int move = -1;
@@ -54,6 +63,13 @@ public:
 
     TicTacToe() : board(3, std::vector<char>(3, ' ')), currentPlayer('X') {}
 
+    /**
+     * @brief Prints the current state of the board to the console
+     *
+     * The board is printed in a 3x3 grid with numbers from 1 to 9 on top
+     * and the current state of the board below. Empty cells are represented
+     * by a hyphen, X's are represented by 'X', and O's are represented by 'O'.
+     */
     void printBoard() {
         for (int i = 0; i < 3; ++i) {
             std::cout << i * 3 + 1 << ' ' << i * 3 + 2 << ' ' << i * 3 + 3 << std::endl;
@@ -64,6 +80,13 @@ public:
         }
     }
 
+    /**
+     * @brief Makes a move on the board
+     * @param move The move to make, as an integer from 1 to 9
+     * @return True if the move was successful, false otherwise
+     * 
+     * The move is successful if the move is valid (i.e., the move is between 1 and 9, and the cell is empty). If the move is successful, the current player is set to the opposite player.
+     */
     bool makeMove(int move) {
         if (move < 1 || move > 9) {
             return false;
@@ -77,6 +100,13 @@ public:
         return true;
     }
 
+    /**
+     * @brief Checks if the current player has won
+     * @return True if the current player has won, false otherwise
+     *
+     * The current player has won if they have three of their marks in a row,
+     * column, or diagonal. If the current player has won, the game is over.
+     */
     bool checkWin() {
         for (int i = 0; i < 3; ++i) {
             if ((board[i][0] == currentPlayer && board[i][1] == currentPlayer && board[i][2] == currentPlayer) ||
@@ -91,6 +121,13 @@ public:
         return false;
     }
 
+    /**
+     * @brief Checks if the game is a draw
+     * @return True if the game board is full and no player has won, false otherwise
+     *
+     * The game is considered a draw if there are no empty cells left on the board
+     * and neither player has achieved a winning condition.
+     */
     bool isDraw() {
         for (auto &row : board) {
             for (char cell : row) {
@@ -100,14 +137,33 @@ public:
         return true;
     }
 
+    /**
+     * @brief Changes the current player to the opposite player
+     * @return None
+     *
+     * If the current player is 'X', it changes to 'O', and vice versa.
+     */
     void changePlayer() {
         currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
     }
 
+    /**
+     * @brief Gets the current player
+     * @return The current player as a character ('X' or 'O')
+     *
+     * This function returns the current player in the game, which is either 'X' or 'O'.
+     */
     char getCurrentPlayer() {
         return currentPlayer;
     }
 
+    /**
+     * @brief Makes the best move for the maximizing player (O)
+     *
+     * This function calls the minimax algorithm to find the best move for the
+     * maximizing player (O) and then makes the move on the current game board.
+     * If the current player is not 'O', the function does nothing.
+     */
     void playBestMove() {
         if (currentPlayer == 'O') {
             int bestMove = getBestMove();
@@ -118,6 +174,11 @@ public:
 
 
 
+/**
+ * @brief Main function for the Tic Tac Toe game
+ * 
+ * This function is the main entry point for the Tic Tac Toe game. It creates a window with a 3x3 grid and handles user input to make moves on the board. It also checks for a win or a draw and displays the result on the screen.
+ */
 int main()
 {
     sf::RenderWindow window(sf::VideoMode(300, 300), "Tic Tac Toe");
