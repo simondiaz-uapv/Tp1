@@ -1,13 +1,9 @@
-#include<iostream>
-#include<vector>
-
 #include <iostream>
 #include <vector>
 #include <limits>
-
+#include <SFML/Graphics.hpp>
 class TicTacToe {
 private:
-    std::vector<std::vector<char>> board;
     char currentPlayer;
 
     int minimax(bool isMaximizing) {
@@ -54,6 +50,8 @@ private:
     }
 
 public:
+    std::vector<std::vector<char>> board;
+
     TicTacToe() : board(3, std::vector<char>(3, ' ')), currentPlayer('X') {}
 
     void printBoard() {
@@ -118,44 +116,94 @@ public:
     }
 };
 
-int main() {
+
+
+int main()
+{
+    sf::RenderWindow window(sf::VideoMode(300, 300), "Tic Tac Toe");
     TicTacToe game;
-    int move;
-    char choice;
-    bool playWithAI;
 
-    std::cout << "Do you want to play against AI? (y/n): ";
-    std::cin >> choice;
-    playWithAI = (choice == 'y' || choice == 'Y');
+    sf::Font font;
+    if (!font.loadFromFile("Monocraft.ttf"))  
+        return -1;
 
-    while (true) {
-        game.printBoard();
-        if (playWithAI && game.getCurrentPlayer() == 'O') {
-            std::cout << "AI is making a move..." << std::endl;
-            game.playBestMove();
-        } else {
-            std::cout << "Player " << game.getCurrentPlayer() << ", enter your move (1-9): ";
-            std::cin >> move;
+    sf::Text text("", font, 24);
+    text.setFillColor(sf::Color::Black);
 
-            if (!game.makeMove(move)) {
-                std::cout << "Invalid move. Try again." << std::endl;
-                continue;
+    sf::RectangleShape shape(sf::Vector2f(100, 100));
+    shape.setFillColor(sf::Color(255, 255, 255));
+    shape.setOutlineColor(sf::Color(0, 0, 0));
+    shape.setOutlineThickness(2);
+
+    while (window.isOpen())
+    {
+        sf::Event event;
+        while (window.pollEvent(event))
+        {
+            if (event.type == sf::Event::Closed)
+                window.close();
+                
+            if (event.type == sf::Event::MouseButtonPressed)
+            {
+                int x = event.mouseButton.x / 100;
+                int y = event.mouseButton.y / 100;
+                int move = y * 3 + x + 1;
+
+                
+                if (game.board[y][x] == ' ' && game.makeMove(move))
+                {
+                    if (game.checkWin())
+                    {
+                        text.setString("Player " + std::string(1, game.getCurrentPlayer()) + " wins!");
+                        text.setPosition(50, 250);
+                        window.draw(text);
+                        window.display();
+                        sf::sleep(sf::seconds(3)); 
+                        window.close();
+                    }
+                    game.changePlayer();
+                }
             }
         }
 
-        if (game.checkWin()) {
-            game.printBoard();
-            std::cout << "Player " << game.getCurrentPlayer() << " wins!" << std::endl;
-            break;
+        window.clear();
+        for (int i = 0; i < 3; ++i)
+        {
+            for (int j = 0; j < 3; ++j)
+            {
+                shape.setPosition(i * 100, j * 100);
+                window.draw(shape);
+                
+                
+                if (game.board[j][i] == 'X')
+                {
+                    text.setString("X");
+                    text.setPosition(i * 100 + 40, j * 100 + 20);
+                    window.draw(text);
+                }
+                else if (game.board[j][i] == 'O')
+                {
+                    text.setString("O");
+                    text.setPosition(i * 100 + 40, j * 100 + 20);
+                    window.draw(text);
+                }
+            }
         }
 
-        if (game.isDraw()) {
-            game.printBoard();
-            std::cout << "The game is a draw!" << std::endl;
-            break;
+        
+        if (game.isDraw())
+        {
+            text.setString("It's a draw!");
+            text.setPosition(50, 250);
+            window.draw(text);
+            window.display();
+            sf::sleep(sf::seconds(3)); 
+            window.close();
         }
 
-        game.changePlayer();
+        window.display();
     }
+
     return 0;
 }
+
